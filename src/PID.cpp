@@ -25,13 +25,11 @@ void PID::UpdateError(double cte) {
     p_error = cte;
     i_error += cte;
     d_error = cte - p_error;
-    
-    //calculate the absolute total error
-    total_error += fabs(cte);
 }
 
 double PID::TotalError() {
     
-    return total_error;
+    //return total error
+    return -1*(Kp * p_error + Kd * d_error + Ki * i_error);
 }
 

@@ -35,8 +35,8 @@ int main()
   PID pid;
     
   //initialize the hyperparameters
-  pid.Init(0.2, 0.0, 0.01);
-
+  pid.Init(0.2, 0.0, 1000.0);
+ 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
@@ -54,17 +54,14 @@ int main()
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
           double steer_value;
             
-          //calculate the steering values
-          steer_value = -1 * (pid.Kp * cte + pid.Ki * pid.i_error + pid.Kd * pid.d_error);
-          
           //update the error
           pid.UpdateError(cte);
-          
-          //output the absolute total error
-          double total_error = pid.TotalError();
-
+        
+          //calculate the steering values
+          steer_value = pid.TotalError();
+    
           // DEBUG
-          std::cout << "CTE: " << cte << " Steering Value: " << steer_value << " Total Error: " << total_error << std::endl;
+          std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
